@@ -302,6 +302,10 @@
   color: #000000;
 }
 
+.content__input :global .ant-input-number-input {
+  height: 62px;
+}
+
 /* .content__right :global .ant-input-number {
   background: #ffffff;
   border: 3.5px solid #000000;
@@ -343,6 +347,7 @@
   font-size: 24px;
   font-weight: 500;
 }
+
 
 .playContent__btnGroups {
   margin-top: 13px;
