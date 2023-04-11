@@ -348,7 +348,6 @@
   font-weight: 500;
 }
 
-
 .playContent__btnGroups {
   margin-top: 13px;
   display: flex;
@@ -713,4 +712,72 @@
   color: #fff;
   text-align: center;
   line-height: 100vh;
+}
+
+.history-list-wrapper {
+  padding-left: -107px;
+  padding-right: 107px;
+  height: 300px;
+  overflow: scroll;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.history-item {
+  height: 100px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.history-tag {
+  height: 50px;
+  width: 110px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  font-weight: 400;
+  padding-right: 14px;
+  border-radius: 10px;
+}
+
+.history-details {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-details-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-right: 77px;
+}
+
+.history-details-cell-title {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: #000000;
+  margin-right: 19px;
+}
+
+.history-details-cell-content {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 32px;
+  line-height: 38px;
+  color: #d63333;
 }
