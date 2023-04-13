@@ -14,6 +14,7 @@ import copy from 'copy-to-clipboard';
 
 import styles from './pc.module.css';
 import { shrinkSendQrData } from '../utils/common';
+import Head from 'next/head';
 
 const PCBingoGame = () => {
   const [inputValue, setInputValue] = useState('1');
@@ -304,6 +305,26 @@ const PCBingoGame = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    const listOfImages = [
+      require('../../public/lock.png').default.src,
+      require('../../public/lose_pc.png').default.src,
+      require('../../public/congratulations_pc.png').default.src,
+      require('../../public/question.png').default.src,
+    ];
+    const div = document.createElement('div');
+    div.style.display = 'none';
+    listOfImages.forEach((val) => {
+      const img = document.createElement('img');
+      img.src = val;
+      img.style.display = 'none';
+      img.style.width = '0';
+      img.style.height = '0';
+      div.appendChild(img);
+    });
+    document.body.appendChild(div);
+  }, []);
 
   return (
     <div className={styles.background}>
