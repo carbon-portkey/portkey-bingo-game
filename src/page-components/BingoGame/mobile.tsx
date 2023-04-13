@@ -3,6 +3,7 @@ import { SignIn, did, PortkeyLoading } from '@portkey/did-ui-react';
 import { CenterPopup, Toast, Input } from 'antd-mobile';
 // import Input from './components/input';
 import { QRCode } from 'react-qrcode-logo';
+import Image from 'next/image';
 
 import { shrinkSendQrData } from '../../utils/common';
 import useBingo, { SettingPage, StepStatus, KEY_NAME } from '../../hooks/useBingo';
@@ -106,7 +107,7 @@ const MBingoGame = () => {
   const renderDefault = () => {
     return (
       <div className={styles.defaultWrapper}>
-        <img className={styles.logo} src={require('../../../public/bingo.png').default.src} />
+        <Image className={styles.logo} src={require('../../../public/bingo.png').default.src} alt="main title" />
         {step === StepStatus.LOCK && (
           <>
             <Button
@@ -126,7 +127,7 @@ const MBingoGame = () => {
               <p className={styles.artWord}>PLAY NOW</p>
             </Button>
             <div className={styles.initTip}>
-              <img src={require('../../../public/warn.svg').default.src} />
+              <Image src={require('../../../public/warn.svg').default.src} alt="warn icon" />
               <span>This is a demo on the Testnet.</span>
             </div>
           </>
@@ -303,9 +304,9 @@ const MBingoGame = () => {
             <>
               <div className={styles.bingoTips}>
                 {isWin ? (
-                  <img src={require('../../../public/congratulation.png').default.src} />
+                  <Image src={require('../../../public/congratulation.png').default.src} alt="congratulation icon" />
                 ) : (
-                  <img src={require('../../../public/lose.png').default.src} />
+                  <Image src={require('../../../public/lose.png').default.src} alt="lose icon" />
                 )}
                 <div className={styles.bingoText}>
                   <span>{text}</span>

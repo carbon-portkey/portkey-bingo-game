@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import useBingo, { SettingPage, StepStatus, KEY_NAME } from '../../hooks/useBingo';
+import useBingo, { StepStatus, KEY_NAME } from '../../hooks/useBingo';
+import Image from 'next/image';
 
 import { SignIn, did, PortkeyLoading } from '@portkey/did-ui-react';
 import { InputNumber, message, Popover } from 'antd';
@@ -92,12 +93,12 @@ const PCBingoGame = () => {
     return (
       <div>
         <div className={styles.defaultWrapper}>
-          <img className={styles.logo} src={require('../../../public/bingo.png').default.src} />
+          <Image className={styles.logo} src={require('../../../public/bingo.png').default.src} alt="main title" />
           <Button className={styles.defaultBtn} type={ButtonType.ORIANGE} onClick={login}>
             <p className={styles.artWord}>PLAY NOW</p>
           </Button>
           <div className={styles.initTip}>
-            <img src={require('../../../public/warn.svg').default.src} />
+            <Image src={require('../../../public/warn.svg').default.src} alt="warn icon" />
             <span>This is a demo on the Testnet.</span>
           </div>
         </div>
@@ -111,7 +112,7 @@ const PCBingoGame = () => {
         <div className={styles.contentWrapper}>
           <div className={styles.content__bg}>
             <div className={styles.content__wrapper}>
-              <img src={require('../../../public/question.png').default.src} />
+              <Image src={require('../../../public/question.png').default.src} alt="question mark" />
               <div className={styles.content__right}>
                 <div className={styles.content__inputWrapper}>
                   <InputNumber
@@ -221,9 +222,12 @@ const PCBingoGame = () => {
                 <>
                   <div className={styles.bingoTips}>
                     {isWin ? (
-                      <img src={require('../../../public/congratulations_pc.png').default.src} />
+                      <Image
+                        src={require('../../../public/congratulations_pc.png').default.src}
+                        alt="congratulation icon"
+                      />
                     ) : (
-                      <img src={require('../../../public/lose_pc.png').default.src} />
+                      <Image src={require('../../../public/lose_pc.png').default.src} alt="lose icon" />
                     )}
                     <div className={styles.bingoText}>
                       <span>{text}</span>
