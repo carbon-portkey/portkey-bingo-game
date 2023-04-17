@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import useBingo, { StepStatus, KEY_NAME } from '../hooks/useBingo';
+import useBingo, { StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
 
 import { SignIn, did, PortkeyLoading, Unlock } from '@portkey/did-ui-react';
 import { InputNumber, message, Popover } from 'antd';
@@ -11,20 +11,17 @@ import { CHAIN_ID } from '../constants/network';
 
 import copy from 'copy-to-clipboard';
 
-import styles from './pc.module.css';
+import styles from '../styles/pc.module.css';
 import { shrinkSendQrData } from '../utils/common';
+import { INITIAL_INPUT_VALUE, MAX_BET_VALUE } from '../constants/global';
 
 const PCBingoGame = () => {
-  const [inputValue, setInputValue] = useState('1');
+  const [inputValue, setInputValue] = useState<string>(INITIAL_INPUT_VALUE);
   const [passwordValue, setPasswordValue] = useState<string>('');
-
   const [showUnlock, setShowUnlock] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
-
   const [isWrongPassWord, setIsWrongPassWord] = useState<boolean>(false);
 
-  // const copyBtnRef = useRef(null);
-  // const copyBoard = useRef(null);
   const {
     onBet,
     onBingo,
@@ -37,38 +34,17 @@ const PCBingoGame = () => {
     step,
     balanceValue,
     setBalanceInputValue,
-    setWallet,
     getBalance,
-    isLogin,
     isWin,
     difference,
     result,
     hasFinishBet,
-    setLoading,
     initContract,
-    setIsLogin,
     loading,
     time,
     tokenContractAddress,
     accountAddress,
   } = useBingo(message);
-
-  // useEffect(() => {
-  //   if (copyBtnRef.current && !copyBoard.current) {
-  //     const clipboard = new Clipboard(copyBtnRef.current, {
-  //       text: () => {
-  //         return accountAddress;
-  //       },
-  //     });
-  //     clipboard.on('success', () => {
-  //       message.success('Copied!');
-  //     });
-  //     clipboard.on('error', () => {
-  //       message.error('Copied!');
-  //     });
-  //     copyBoard.current = clipboard;
-  //   }
-  // });
 
   const getQrInfo = () => {
     const info = shrinkSendQrData({
@@ -139,7 +115,7 @@ const PCBingoGame = () => {
                     bordered={false}
                     precision={2}
                     min={'0'}
-                    max={'100'}
+                    max={`${MAX_BET_VALUE}`}
                     className={styles.content__input}
                     onChange={(val) => {
                       setBalanceInputValue(val);
@@ -151,8 +127,8 @@ const PCBingoGame = () => {
                 <div className={styles.playContent__btnGroups}>
                   <button
                     onClick={() => {
-                      setBalanceInputValue('1');
-                      setInputValue('1');
+                      setBalanceInputValue(INITIAL_INPUT_VALUE);
+                      setInputValue(INITIAL_INPUT_VALUE);
                     }}
                     className={[styles.playContent__btn, styles.button].join(' ')}>
                     MIN
@@ -160,16 +136,16 @@ const PCBingoGame = () => {
                   <button
                     onClick={() => {
                       try {
-                        const balance = Math.min(Number(balanceValue), 100);
+                        const balance = Math.min(Number(balanceValue), MAX_BET_VALUE);
                         setBalanceInputValue(`${Math.floor(balance)}`);
                         setInputValue(`${Math.floor(balance)}`);
                       } catch (error) {
-                        console.log('error', error);
+                        console.error('error', error);
                       }
                     }}
                     className={[styles.playContent__btn, styles.button].join(' ')}>
                     MAX
-                    <span style={{ fontSize: '16px', paddingLeft: '4px' }}>(100)</span>
+                    <span style={{ fontSize: '16px', paddingLeft: '4px' }}>{`(${MAX_BET_VALUE})`}</span>
                   </button>
                 </div>
                 <div className={styles.playContent__betBtnGroups}>
@@ -177,7 +153,7 @@ const PCBingoGame = () => {
                     className={styles.playContent__betBtn}
                     type={ButtonType.ORIANGE}
                     onClick={async () => {
-                      onPlay(1);
+                      onPlay(BetType.BIG);
                     }}>
                     <span className={styles.playContent__betBtn_p}>
                       <p className={styles.artWord}>BIG</p>
@@ -188,7 +164,7 @@ const PCBingoGame = () => {
                     className={styles.playContent__betBtn}
                     type={ButtonType.BLUE}
                     onClick={() => {
-                      onPlay(0);
+                      onPlay(BetType.SMALL);
                     }}>
                     <span className={styles.playContent__betBtn_p}>
                       <p className={styles.artWord}>SMALL</p>
@@ -255,8 +231,8 @@ const PCBingoGame = () => {
                     type={ButtonType.ORIANGE}
                     onClick={() => {
                       onBet();
-                      setBalanceInputValue('1');
-                      setInputValue('1');
+                      setBalanceInputValue(INITIAL_INPUT_VALUE);
+                      setInputValue(INITIAL_INPUT_VALUE);
                     }}>
                     <span className={styles.playContent__betBtn_p}>
                       <p style={{ fontSize: '48px', fontWeight: 900 }} className={styles.artWord}>
@@ -336,9 +312,6 @@ const PCBingoGame = () => {
                     : accountAddress}
                 </div>
                 <button
-                  // ref={(ref) => {
-                  //   copyBtnRef.current = ref;
-                  // }}
                   className={styles.setting__account__content__copy}
                   onClick={() => {
                     copy(accountAddress);
@@ -386,22 +359,6 @@ const PCBingoGame = () => {
             await login(wallet);
             setShowLogin(false);
             initContract();
-
-            // if (wallet.chainId !== CHAIN_ID) {
-            //   const caInfo = await did.didWallet.getHolderInfoByContract({
-            //     caHash: wallet.caInfo.caHash,
-            //     chainId: CHAIN_ID,
-            //   });
-            //   wallet.caInfo = {
-            //     caAddress: caInfo.caAddress,
-            //     caHash: caInfo.caHash,
-            //   };
-            // }
-            // setLoading(true);
-            // setIsLogin(false);
-            // setWallet(wallet);
-            // did.save(wallet.pin, KEY_NAME);
-            // initContract();
           }}
           onError={(err) => {
             console.error(err, 'onError==');

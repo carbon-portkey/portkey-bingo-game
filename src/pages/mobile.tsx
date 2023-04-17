@@ -1,23 +1,22 @@
 import React, { MouseEventHandler, useRef, useState, useEffect } from 'react';
-import { SignIn, did, PortkeyLoading, Unlock, DIDWalletInfo } from '@portkey/did-ui-react';
+import { SignIn, did, PortkeyLoading, Unlock } from '@portkey/did-ui-react';
 import { CenterPopup, Toast, Input } from 'antd-mobile';
 import { QRCode } from 'react-qrcode-logo';
 
 import { shrinkSendQrData } from '../utils/common';
-import useBingo, { SettingPage, StepStatus, KEY_NAME } from '../hooks/useBingo';
+import useBingo, { SettingPage, StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
 
 import { CHAIN_ID } from '../constants/network';
 
 import Clipboard from 'clipboard';
 
-import styles from './mobile.module.css';
+import styles from '../styles/mobile.module.css';
+import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, MIN_BET_VALUE } from '../constants/global';
 
 enum ButtonType {
   BLUE,
   ORIANGE,
 }
-
-// const KEY_NAME = 'BINGO_GAME';
 
 const Button = (props: {
   children: any;
@@ -38,15 +37,11 @@ const Button = (props: {
 };
 
 const MBingoGame = () => {
-  const [inputValue, setInputValue] = useState('1');
-
+  const [inputValue, setInputValue] = useState<string>(INITIAL_INPUT_VALUE);
   const [passwordValue, setPasswordValue] = useState<string>('');
-
   const [showUnlock, setShowUnlock] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
-
   const [isWrongPassWord, setIsWrongPassWord] = useState<boolean>(false);
-
   const copyBtnRef = useRef<Element>(null);
   const copyBoard = useRef<Clipboard>(null);
 
@@ -64,8 +59,6 @@ const MBingoGame = () => {
     balanceValue,
     getBalance,
     setBalanceInputValue,
-    setWallet,
-    isLogin,
     showQrCode,
     isWin,
     setShowQrCode,
@@ -75,7 +68,6 @@ const MBingoGame = () => {
     setSettingPage,
     setLoading,
     initContract,
-    setIsLogin,
     loading,
     time,
     tokenContractAddress,
@@ -209,8 +201,8 @@ const MBingoGame = () => {
             <div className={styles.playContent__btnGroups}>
               <button
                 onClick={() => {
-                  setBalanceInputValue('1');
-                  setInputValue('1');
+                  setBalanceInputValue(INITIAL_INPUT_VALUE);
+                  setInputValue(INITIAL_INPUT_VALUE);
                 }}
                 className={[styles.playContent__btn, styles.button].join(' ')}>
                 MIN
@@ -218,16 +210,16 @@ const MBingoGame = () => {
               <button
                 onClick={() => {
                   try {
-                    const balance = Math.min(Number(balanceValue), 100);
+                    const balance = Math.min(Number(balanceValue), MAX_BET_VALUE);
                     setBalanceInputValue(`${Math.floor(balance)}`);
                     setInputValue(`${Math.floor(balance)}`);
                   } catch (error) {
-                    console.log('error', error);
+                    console.error('error', error);
                   }
                 }}
                 className={[styles.playContent__btn, styles.button].join(' ')}>
                 MAX
-                <span style={{ fontSize: '10px', paddingLeft: '4px' }}>(100)</span>
+                <span style={{ fontSize: '10px', paddingLeft: '4px' }}>{`(${MAX_BET_VALUE})`}</span>
               </button>
             </div>
             <div className={styles.playContent__betBtnGroups}>
@@ -235,7 +227,7 @@ const MBingoGame = () => {
                 className={styles.playContent__betBtn}
                 type={ButtonType.ORIANGE}
                 onClick={async () => {
-                  onPlay(1);
+                  onPlay(BetType.BIG);
                 }}>
                 <span className={styles.playContent__betBtn_p}>
                   <p className={styles.artWord}>BIG</p>
@@ -246,7 +238,7 @@ const MBingoGame = () => {
                 className={styles.playContent__betBtn}
                 type={ButtonType.BLUE}
                 onClick={() => {
-                  onPlay(0);
+                  onPlay(BetType.SMALL);
                 }}>
                 <span className={styles.playContent__betBtn_p}>
                   <p className={styles.artWord}>SMALL</p>
@@ -325,8 +317,8 @@ const MBingoGame = () => {
                 type={ButtonType.ORIANGE}
                 onClick={() => {
                   onBet();
-                  setBalanceInputValue('1');
-                  setInputValue('1');
+                  setBalanceInputValue(INITIAL_INPUT_VALUE);
+                  setInputValue(INITIAL_INPUT_VALUE);
                 }}>
                 <span className={styles.playContent__betBtn_p}>
                   <p style={{ fontSize: '24px' }} className={styles.artWord}>

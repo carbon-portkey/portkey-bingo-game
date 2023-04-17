@@ -1,6 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 
-import styles from './style.module.css';
+import styles from '../styles/button.module.css';
 
 export enum ButtonType {
   BLUE,
