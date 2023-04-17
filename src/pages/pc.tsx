@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import useBingo, { StepStatus, KEY_NAME } from '../hooks/useBingo';
 
@@ -23,8 +23,8 @@ const PCBingoGame = () => {
 
   const [isWrongPassWord, setIsWrongPassWord] = useState<boolean>(false);
 
-  const copyBtnRef = useRef(null);
-  const copyBoard = useRef(null);
+  // const copyBtnRef = useRef(null);
+  // const copyBoard = useRef(null);
   const {
     onBet,
     onBingo,

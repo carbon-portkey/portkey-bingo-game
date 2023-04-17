@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect } from 'react';
+import React, { MouseEventHandler } from 'react';
 
 import styles from './style.module.css';
 

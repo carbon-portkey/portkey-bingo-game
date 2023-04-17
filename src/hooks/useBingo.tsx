@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DIDWalletInfo, did } from '@portkey/did-ui-react';
 import { ChainInfo } from '@portkey/services';
 import { getContractBasic, ContractBasic } from '@portkey/contracts';
@@ -11,7 +11,6 @@ import { useDelay } from './useDelay';
 import { bingoAddress, CHAIN_ID } from '../constants/network';
 
 import useIntervalAsync from './useInterValAsync';
-import { type } from 'os';
 
 export enum StepStatus {
   INIT,

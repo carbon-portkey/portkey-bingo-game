@@ -47,8 +47,8 @@ const MBingoGame = () => {
 
   const [isWrongPassWord, setIsWrongPassWord] = useState<boolean>(false);
 
-  const copyBtnRef = useRef(null);
-  const copyBoard = useRef(null);
+  const copyBtnRef = useRef<Element>(null);
+  const copyBoard = useRef<Clipboard>(null);
 
   const {
     onBet,
@@ -150,7 +150,7 @@ const MBingoGame = () => {
     }
   }, [settingPage]);
 
-  const PlayWrapper = (props: any) => {
+  const PlayWrapper = (props: { children: any; show?: boolean }) => {
     const { children, show = true } = props;
     return (
       <CenterPopup visible={show} className={styles.centerPopup}>
