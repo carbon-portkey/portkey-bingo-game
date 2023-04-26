@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, useRef, useState } from 'react';
-import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, TOKEN_UNIT, defaultCountryCodeConfig } from '../constants/global';
+import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, TOKEN_UNIT, DEFAULT_COUNTRY_CODE_CONFIG } from '../constants/global';
 import useBingo, { SettingPage, StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
 import { SignIn, did, Unlock, SignInInterface } from '@portkey/did-ui-react';
 import { message, InputNumber, Modal, Popover } from 'antd';
@@ -40,7 +40,6 @@ const MBingoGame = () => {
   const [isWrongPassword, setIsWrongPassword] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const signinRef = useRef<SignInInterface | null>(null);
-  // const [random, setRandom] = useState<number>(randomNum());
 
   const {
     onBet,
@@ -298,18 +297,6 @@ const MBingoGame = () => {
     );
   };
 
-  // const renderCutDown = () => {
-  //   return (
-  //     <div className={styles.cutDownWrapper}>
-  //       <div className={styles.cutDown__bg} />
-  //       <div className={styles.cutDown}>
-  //         <p>{time}</p>
-  //       </div>
-  //       <span className={styles.cutDown__tip}>Getting on-chain data to generate random numbers...</span>
-  //     </div>
-  //   );
-  // };
-
   const renderBingo = () => {
     const text = isWin ? 'You Win' : 'You Lose';
     const style = isWin
@@ -474,7 +461,7 @@ const MBingoGame = () => {
       <SignIn
         ref={(ref) => (signinRef.current = ref as SignInInterface)}
         uiType="Modal"
-        phoneCountry={defaultCountryCodeConfig}
+        phoneCountry={DEFAULT_COUNTRY_CODE_CONFIG}
         sandboxId="portkey-ui-sandbox"
         defaultChainId={CHAIN_ID}
         isShowScan={false}

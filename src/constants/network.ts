@@ -1,5 +1,3 @@
-// import { ChainId } from '@portkey/types';
-
 const bingoAddress = 'fU9csLqXtnSbcyRJs3fPYLFTz2S9EZowUqkYe4zrJgp1avXK2';
 const CHAIN_ID = 'tDVV';
 

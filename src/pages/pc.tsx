@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, defaultCountryCodeConfig } from '../constants/global';
+import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, DEFAULT_COUNTRY_CODE_CONFIG } from '../constants/global';
 import useBingo, { StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
 import { SignIn, did, Unlock, SignInInterface } from '@portkey/did-ui-react';
 import { InputNumber, message, Popover, Modal } from 'antd';
@@ -432,7 +432,7 @@ const PCBingoGame = () => {
           ref={(ref) => (signinRef.current = ref as SignInInterface)}
           sandboxId="portkey-ui-sandbox"
           defaultChainId={CHAIN_ID}
-          phoneCountry={defaultCountryCodeConfig}
+          phoneCountry={DEFAULT_COUNTRY_CODE_CONFIG}
           uiType="Modal"
           isShowScan={false}
           onFinish={async (wallet) => {
