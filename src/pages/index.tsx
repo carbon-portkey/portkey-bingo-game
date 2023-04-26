@@ -14,6 +14,9 @@ import ImgSourceMap from '../constants/sourceMap';
 ConfigProvider.setGlobalConfig({
   storageMethod: new Store(),
   graphQLUrl: '/AElfIndexer_DApp/PortKeyIndexerCASchema/graphql',
+  // reCaptchaConfig: {
+  //   siteKey: '6LfR_bElAAAAAJSOBuxle4dCFaciuu9zfxRQfQC0',
+  // },
   socialLogin: {
     Apple: {
       clientId: 'did.portkey',
@@ -21,6 +24,10 @@ ConfigProvider.setGlobalConfig({
     },
     Google: {
       clientId: '176147744733-a2ks681uuqrmb8ajqrpu17te42gst6lq.apps.googleusercontent.com',
+    },
+    Portkey: {
+      websiteName: 'Bingo Game',
+      websiteIcon: '​https://bingogame.portkey.finance/favicon.ico',
     },
   },
   network: {

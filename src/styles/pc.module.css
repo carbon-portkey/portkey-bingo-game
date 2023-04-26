@@ -385,6 +385,10 @@
   margin: 44.1vw 13.2vw 8.5vw 13.2vw;
 }
 
+.content__input :global .ant-input-number-input {
+  height: 6.2rem;
+}
+
 .boardWrapper {
   background-image: url('../../public/board_bg.png');
   background-size: 100% 100%;

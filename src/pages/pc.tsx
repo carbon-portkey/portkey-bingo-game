@@ -31,6 +31,7 @@ const PCBingoGame = () => {
     logOut,
     lock,
     step,
+    setStep,
     random,
     balanceValue,
     setBalanceInputValue,
@@ -434,7 +435,7 @@ const PCBingoGame = () => {
           defaultChainId={CHAIN_ID}
           phoneCountry={DEFAULT_COUNTRY_CODE_CONFIG}
           uiType="Modal"
-          isShowScan={false}
+          isShowScan
           onFinish={async (wallet) => {
             console.log('SignIn onFinish==', wallet);
             await login(wallet);
