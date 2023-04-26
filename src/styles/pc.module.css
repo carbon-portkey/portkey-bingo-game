@@ -346,6 +346,10 @@
   margin-right: 8.3rem;
 }
 
+.content__cutDown_img {
+  width: 25.4rem;
+}
+
 .content__right {
   flex: 1;
   margin-left: 6.5rem;
@@ -425,6 +429,7 @@
   display: flex;
   justify-content: space-between;
 }
+
 .playContent__btn {
   background-image: url('../../public/rectangle_pc.png');
   background-size: 100% 100%;
@@ -432,6 +437,11 @@
   height: 6rem;
   color: #fff;
   font-size: 2.4rem;
+}
+
+.playContent__btn_text {
+  font-size: 1.6rem;
+  padding-left: 0.4rem;
 }
 
 .playContent__betBtnGroups {

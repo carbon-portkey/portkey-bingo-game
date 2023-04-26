@@ -111,3 +111,10 @@ export const randomNum = () => {
 };
 
 export const transaction = Sentry?.getCurrentHub()?.getScope()?.getTransaction();
+
+export const shrinkAddress = (address: string): string => {
+  const maxShow = 18;
+  return address.length > maxShow
+    ? address.slice(0, maxShow / 2) + '...' + address.slice(address.length - maxShow / 2, address.length)
+    : address;
+};
