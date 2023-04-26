@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { DIDWalletInfo, did } from '@portkey/did-ui-react';
 import { ChainInfo } from '@portkey/services';
 import { getContractBasic, ContractBasic } from '@portkey/contracts';
+import { message } from 'antd';
 
 import AElf from 'aelf-sdk';
 import { clearMyInterval, randomNum, setMyInterval, shrinkSendQrData, transaction } from '../utils/common';
@@ -25,14 +26,6 @@ export enum StepStatus {
   END,
 }
 
-export enum SettingPage {
-  NULL,
-  ACCOUNT,
-  BALANCE,
-  LOGOUT,
-  QRCODE,
-}
-
 export enum ButtonType {
   BLUE,
   ORIANGE,
@@ -48,9 +41,8 @@ const COUNT = 5;
 const RAMDOM_COUNT = 1;
 const RAMDOM_TIME = 6;
 
-const useBingo = (Toast: any) => {
+const useBingo = () => {
   const [step, setStep] = useState<StepStatus>(StepStatus.INIT);
-  const [settingPage, setSettingPage] = useState<SettingPage>(SettingPage.NULL);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [showQrCode, setShowQrCode] = useState<boolean>(false);
   const [isWin, setIsWin] = useState<boolean>(false);
@@ -373,29 +365,6 @@ const useBingo = (Toast: any) => {
     setCaAddress(wallet.caInfo.caAddress);
   };
 
-  const initAnotherChainContract = async () => {
-    const chainInfo = chainsInfoRef.current.find((chain) => chain.chainId !== CHAIN_ID);
-    const wallet = walletRef.current;
-    if (!aelfRef.current || !chainInfo || !wallet) return;
-
-    try {
-      caContractRef.current = await getContractBasic({
-        contractAddress: chainInfo?.caContractAddress,
-        account: wallet.walletInfo.wallet,
-        rpcUrl: chainInfo?.endPoint,
-      });
-      const multiTokenContract = await getContractBasic({
-        contractAddress: chainInfo.defaultToken.address,
-        account: wallet.walletInfo.wallet,
-        rpcUrl: chainInfo?.endPoint,
-      });
-
-      anotherMultiTokenContractRef.current = multiTokenContract;
-    } catch (error) {
-      console.error('initAnotherChainContract: error', error);
-    }
-  };
-
   const setBalanceInputValue = (value: string) => {
     balanceInputValueRef.current = value;
   };
@@ -566,12 +535,10 @@ const useBingo = (Toast: any) => {
     setLoading(false);
     window.localStorage.removeItem(KEY_NAME);
     setStep(StepStatus.LOGIN);
-    setSettingPage(SettingPage.NULL);
   };
 
   const lock = async () => {
     setStep(StepStatus.LOCK);
-    setSettingPage(SettingPage.NULL);
     did.reset();
   };
 
@@ -591,9 +558,9 @@ const useBingo = (Toast: any) => {
 
   useEffect(() => {
     if (!ToastRef.current) {
-      ToastRef.current = Toast;
+      ToastRef.current = message;
     }
-  }, [Toast]);
+  }, []);
 
   return {
     onBet,
@@ -603,7 +570,6 @@ const useBingo = (Toast: any) => {
     login,
     logOut,
     lock,
-    setSettingPage,
     setBalanceInputValue,
     setCaAddress,
     caAddress,
@@ -621,7 +587,6 @@ const useBingo = (Toast: any) => {
     initContract,
     setLoading,
     loading,
-    settingPage,
     isLogin,
     setIsLogin,
     showQrCode,

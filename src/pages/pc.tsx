@@ -1,28 +1,34 @@
-import React, { useState, useRef } from 'react';
-import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, DEFAULT_COUNTRY_CODE_CONFIG } from '../constants/global';
-import useBingo, { StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
-import { SignIn, did, Unlock, SignInInterface } from '@portkey/did-ui-react';
-import { InputNumber, message, Popover, Modal } from 'antd';
-import Loading from '../page-components/Loading';
+import React from 'react';
+import { InputNumber, Popover, Modal } from 'antd';
+import { SignIn, did, Unlock } from '@portkey/did-ui-react';
 
+import useAccount from '../hooks/useAccount';
+import useCopy from '../hooks/useCopy';
+import useInputs from '../hooks/useInputs';
+import useModal from '../hooks/useModal';
+import Loading from '../page-components/Loading';
+import { decorateBalanceText } from '../utils/common';
 import { Button, ButtonType } from '../page-components/Button';
 import { QRCode } from 'react-qrcode-logo';
+import useBingo, { StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
 import { CHAIN_ID, isTestNet, currentNetworkType } from '../constants/network';
-import copy from 'copy-to-clipboard';
+import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, DEFAULT_COUNTRY_CODE_CONFIG } from '../constants/global';
+
 import styles from '../styles/pc.module.css';
 
-import { decorateBalanceText } from '../utils/common';
-
 const PCBingoGame = () => {
-  const [inputValue, setInputValue] = useState<string>(INITIAL_INPUT_VALUE);
-  const [passwordValue, setPasswordValue] = useState<string>('');
-  const [showUnlock, setShowUnlock] = useState<boolean>(false);
-  const [showMenuPop, setShowMenuPop] = useState<boolean>(false);
-
-  const [isWrongPassword, setIsWrongPassword] = useState<boolean>(false);
-  const signinRef = useRef<SignInInterface | null>(null);
-
   const {
+    loading,
+    time,
+    step,
+    random,
+    balanceValue,
+    isWin,
+    difference,
+    result,
+    hasFinishBet,
+    accountAddress,
+    loadingExtraDataMode,
     onBet,
     onBingo,
     onPlay,
@@ -30,27 +36,17 @@ const PCBingoGame = () => {
     login,
     logOut,
     lock,
-    step,
-    setStep,
-    random,
-    balanceValue,
     setBalanceInputValue,
     getBalance,
-    isWin,
-    difference,
-    result,
-    hasFinishBet,
     initContract,
-    loading,
-    time,
     getQrInfo,
-    accountAddress,
-    loadingExtraDataMode,
-  } = useBingo(message);
+  } = useBingo();
 
-  const setShowLogin = (show: boolean) => {
-    signinRef.current?.setOpen(show);
-  };
+  const { onCopy } = useCopy({ accountAddress });
+  const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+  const { showUnlock, setShowUnlock, setSigninRef, setShowLogin } = useAccount();
+  const { inputValue, setInputValue, passwordValue, setPasswordValue, isWrongPassword, setIsWrongPassword } =
+    useInputs();
 
   const renderLoginAndUnlock = () => {
     return (
@@ -105,7 +101,7 @@ const PCBingoGame = () => {
               {step === StepStatus.CUTDOWN && (
                 <div className={styles.content__cutDown}>
                   <div className={styles.content__cutDown_time}>{time}</div>
-                  <img style={{ width: '25.4rem' }} src={require('../../public/sand_clock.png').default.src} />
+                  <img style={styles.content__cutDown_img} src={require('../../public/sand_clock.png').default.src} />
                 </div>
               )}
 
@@ -157,7 +153,7 @@ const PCBingoGame = () => {
                         }}
                         className={[styles.playContent__btn, styles.button].join(' ')}>
                         MAX
-                        <span style={{ fontSize: '1.6rem', paddingLeft: '0.4rem' }}>{`(${MAX_BET_VALUE})`}</span>
+                        <span style={styles.playContent__btn_text}>{`(${MAX_BET_VALUE})`}</span>
                       </button>
                     </div>
                     <div className={styles.playContent__betBtnGroups}>
@@ -295,9 +291,7 @@ const PCBingoGame = () => {
             <img
               className={[styles.setting__menu, styles.btn].join(' ')}
               src={require('../../public/menu_pc.png').default.src}
-              onClick={() => {
-                setShowMenuPop(true);
-              }}
+              onClick={showModal}
             />
             <div className={styles.setting__balance}>
               <div className={styles.setting__balance__content}>
@@ -321,13 +315,7 @@ const PCBingoGame = () => {
                       )}`
                     : accountAddress}
                 </div>
-                <button
-                  className={styles.setting__account__content__copy}
-                  onClick={() => {
-                    copy(accountAddress);
-                    message.success('Copied!');
-                  }}
-                />
+                <button className={styles.setting__account__content__copy} onClick={onCopy} />
 
                 <Popover
                   content={() => (
@@ -357,14 +345,12 @@ const PCBingoGame = () => {
           </div>
         )}
         {renderSence()}
-        {/* {step === StepStatus.CUTDOWN && renderCutDown()} */}
-
         <Modal
           className={styles.menuPop}
           centered
-          open={showMenuPop}
-          onOk={() => setShowMenuPop(false)}
-          onCancel={() => setShowMenuPop(false)}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
           width={1000}
           closeIcon={<img style={{ width: '6.4rem' }} src={require('../../public/close.png').default.src} />}
           footer={null}>
@@ -381,13 +367,7 @@ const PCBingoGame = () => {
                         )}`
                       : accountAddress}
                   </div>
-                  <button
-                    className={styles.setting__account__content__copy}
-                    onClick={() => {
-                      copy(accountAddress);
-                      message.success('Copied!');
-                    }}
-                  />
+                  <button className={styles.setting__account__content__copy} onClick={onCopy} />
 
                   <Popover
                     content={() => (
@@ -413,24 +393,13 @@ const PCBingoGame = () => {
                   </div>
                   <span style={{ color: '#707070', fontSize: '1.2rem' }}>{currentNetworkType}</span>
                 </div>
-                {/* <div className={styles.menuPop__tag}>Current</div> */}
               </div>
-              {/* <div className={styles.menuPop__wrapper_content_textContent}>
-                <img src={require('../../public/bitcoin.svg').default.src} />
-                <div className={styles.menuPop__textContent_flex}>
-                  <div className={styles.menuPop__textContent_flex_top}>
-                    <span>ELF</span>
-                    <span>{anotherBalanceValue}</span>
-                  </div>
-                  <span style={{ color: '#707070' }}>MainChain AELF Testnet</span>
-                </div>
-              </div> */}
             </div>
           </div>
         </Modal>
 
         <SignIn
-          ref={(ref) => (signinRef.current = ref as SignInInterface)}
+          ref={setSigninRef}
           sandboxId="portkey-ui-sandbox"
           defaultChainId={CHAIN_ID}
           phoneCountry={DEFAULT_COUNTRY_CODE_CONFIG}

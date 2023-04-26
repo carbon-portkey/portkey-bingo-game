@@ -1,47 +1,33 @@
-import React, { MouseEventHandler, useRef, useState } from 'react';
+import React from 'react';
 import { INITIAL_INPUT_VALUE, MAX_BET_VALUE, TOKEN_UNIT, DEFAULT_COUNTRY_CODE_CONFIG } from '../constants/global';
-import useBingo, { SettingPage, StepStatus, KEY_NAME, BetType } from '../hooks/useBingo';
-import { SignIn, did, Unlock, SignInInterface } from '@portkey/did-ui-react';
-import { message, InputNumber, Modal, Popover } from 'antd';
+import useBingo, { StepStatus, KEY_NAME, BetType, ButtonType } from '../hooks/useBingo';
+import { SignIn, did, Unlock } from '@portkey/did-ui-react';
+import { InputNumber, Modal, Popover } from 'antd';
 import Loading from '../page-components/Loading';
 import { QRCode } from 'react-qrcode-logo';
 import { CHAIN_ID, currentNetworkType, isTestNet } from '../constants/network';
+import { decorateBalanceText, shrinkAddress } from '../utils/common';
+import useModal from '../hooks/useModal';
+import useCopy from '../hooks/useCopy';
+import useAccount from '../hooks/useAccount';
+import useInputs from '../hooks/useInputs';
+import { Button } from '../page-components/Button';
+
 import styles from '../styles/mobile.module.css';
-import copy from 'copy-to-clipboard';
-import { decorateBalanceText } from '../utils/common';
-
-enum ButtonType {
-  BLUE,
-  ORIANGE,
-}
-
-const Button = (props: {
-  children: any;
-  enable?: boolean;
-  type: ButtonType;
-  className?: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
-}) => {
-  const { children, type, className, onClick, enable = true } = props;
-  return (
-    <button
-      disabled={!enable}
-      onClick={onClick}
-      className={[className, styles.btn, type === ButtonType.BLUE ? styles.blueBtn : styles.oriangeBtn].join(' ')}>
-      {children}
-    </button>
-  );
-};
 
 const MBingoGame = () => {
-  const [inputValue, setInputValue] = useState<string>(INITIAL_INPUT_VALUE);
-  const [passwordValue, setPasswordValue] = useState<string>('');
-  const [showUnlock, setShowUnlock] = useState<boolean>(false);
-  const [isWrongPassword, setIsWrongPassword] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const signinRef = useRef<SignInInterface | null>(null);
-
   const {
+    step,
+    random,
+    balanceValue,
+    isWin,
+    difference,
+    result,
+    hasFinishBet,
+    loading,
+    accountAddress,
+    time,
+    loadingExtraDataMode,
     onBet,
     onBingo,
     onPlay,
@@ -49,43 +35,16 @@ const MBingoGame = () => {
     login,
     logOut,
     lock,
-    step,
-    random,
-    balanceValue,
-    setBalanceInputValue,
-    isWin,
     getQrInfo,
-    difference,
-    result,
-    hasFinishBet,
-    setSettingPage,
     initContract,
-    loading,
-    time,
-    accountAddress,
-    loadingExtraDataMode,
-  } = useBingo(message);
+    setBalanceInputValue,
+  } = useBingo();
 
-  const setShowLogin = (show: boolean) => {
-    signinRef.current?.setOpen(show);
-  };
-
-  const onCopy = () => {
-    copy(accountAddress);
-    message.success('Copied!');
-  };
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const { onCopy } = useCopy({ accountAddress });
+  const { isModalOpen, showModal, handleOk, handleCancel } = useModal();
+  const { showUnlock, setShowUnlock, setShowLogin, setSigninRef } = useAccount();
+  const { inputValue, setInputValue, passwordValue, setPasswordValue, isWrongPassword, setIsWrongPassword } =
+    useInputs();
 
   /**
    *  render function
@@ -144,11 +103,10 @@ const MBingoGame = () => {
           <button
             onClick={() => {
               showModal();
-              setSettingPage(SettingPage.ACCOUNT);
             }}
             className={[styles.settingBtn, styles.button].join(' ')}></button>
           <button onClick={onCopy} className={[styles.accountBtn, styles.button].join(' ')}>
-            <div className={styles.buttonText}>{dealWithAccountAddressDisplay(accountAddress)}</div>
+            <div className={styles.buttonText}>{shrinkAddress(accountAddress)}</div>
             <div className={styles.copyIcon} />
           </button>
           <button className={styles.balanceBtn}>
@@ -167,13 +125,6 @@ const MBingoGame = () => {
     );
   };
 
-  const dealWithAccountAddressDisplay = (address: string): string => {
-    const maxShow = 18;
-    return address.length > maxShow
-      ? address.slice(0, maxShow / 2) + '...' + address.slice(address.length - maxShow / 2, address.length)
-      : address;
-  };
-
   const renderPlay = () => {
     return (
       <div className={styles.container}>
@@ -184,7 +135,7 @@ const MBingoGame = () => {
             }}
             className={[styles.settingBtn, styles.button].join(' ')}></button>
           <button onClick={onCopy} className={[styles.accountBtn, styles.button].join(' ')}>
-            <div className={styles.buttonText}>{dealWithAccountAddressDisplay(accountAddress)}</div>
+            <div className={styles.buttonText}>{shrinkAddress(accountAddress)}</div>
             <div className={styles.copyIcon} />
           </button>
           <button className={styles.balanceBtn}>
@@ -360,7 +311,7 @@ const MBingoGame = () => {
     return (
       <div className={styles.setting__content}>
         <div className={styles.setting__account__module}>
-          <div className={styles.setting__account__module__text}>{dealWithAccountAddressDisplay(accountAddress)}</div>
+          <div className={styles.setting__account__module__text}>{shrinkAddress(accountAddress)}</div>
           <div className={styles.setting__account__module__copy} onClick={onCopy} />
           <Popover
             trigger={'click'}
@@ -459,7 +410,7 @@ const MBingoGame = () => {
       <Loading isMobileMode loading={loading} extraDataMode={loadingExtraDataMode} />
       {renderSence()}
       <SignIn
-        ref={(ref) => (signinRef.current = ref as SignInInterface)}
+        ref={setSigninRef}
         uiType="Modal"
         phoneCountry={DEFAULT_COUNTRY_CODE_CONFIG}
         sandboxId="portkey-ui-sandbox"
