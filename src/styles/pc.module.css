@@ -347,7 +347,7 @@
 }
 
 .content__cutDown_img {
-  width: '25.4rem';
+  width: 25.4rem;
 }
 
 .content__right {
@@ -440,8 +440,8 @@
 }
 
 .playContent__btn_text {
-  font-size: '1.6rem';
-  padding-left: '0.4rem';
+  font-size: 1.6rem;
+  padding-left: 0.4rem;
 }
 
 .playContent__betBtnGroups {
